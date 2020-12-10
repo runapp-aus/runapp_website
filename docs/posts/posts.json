@@ -1,0 +1,19 @@
+[
+  {
+    "path": "posts/welcome/",
+    "title": "Welcome to runapp",
+    "description": "Lorem! Ipsum!",
+    "author": [
+      {
+        "name": "Matt Cowgill",
+        "url": "https://mattcowgill.com"
+      }
+    ],
+    "date": "2020-12-10",
+    "categories": [],
+    "contents": "\nSome text goes here! And other stuff!\n\n\n\n",
+    "preview": {},
+    "last_modified": "2020-12-10T15:12:32+08:00",
+    "input_file": {}
+  }
+]

@@ -1,0 +1,11 @@
+---
+title: "About this blog"
+description: |
+  Some additional details about runapp go here
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+runapp! It's cool and good!
