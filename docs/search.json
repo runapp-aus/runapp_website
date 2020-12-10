@@ -3,17 +3,17 @@
     {
       "path": "about.html",
       "title": "About this blog",
-      "description": "Some additional details about the blog",
+      "description": "Some additional details about runapp go here",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2020-12-10T15:12:38+08:00"
+      "contents": "\nrunapp! It’s cool and good!\n\n\n\n",
+      "last_modified": "2020-12-10T15:26:23+08:00"
     },
     {
       "path": "index.html",
       "title": "runapp",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2020-12-10T15:12:39+08:00"
+      "last_modified": "2020-12-10T15:26:24+08:00"
     }
   ],
   "collections": ["posts/posts.json"]
