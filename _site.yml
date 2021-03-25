@@ -4,6 +4,8 @@ description: |
   runapp
 output_dir: "docs"
 navbar:
+  logo:
+    image: images/runapp_logo.png
   right:
     - text: "Home"
       href: index.html
@@ -15,3 +17,4 @@ output: distill::distill_article
 base_url: https://runapp-aus.github.io/runapp_website/
 repository_url: https://github.com/runapp-aus/runapp_website
 source_url: true
+theme: runapp_theme.css
