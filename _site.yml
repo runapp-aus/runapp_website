@@ -12,3 +12,6 @@ navbar:
     - text: "Code of Conduct"
       href: code-of-conduct.html
 output: distill::distill_article
+base_url: https://runapp-aus.github.io/runapp_website/
+repository_url: https://github.com/runapp-aus/runapp_website
+source_url: true

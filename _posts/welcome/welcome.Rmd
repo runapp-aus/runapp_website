@@ -1,7 +1,7 @@
 ---
 title: "Welcome to runapp"
 description: |
-  Lorem! Ipsum!
+  The R Users' Network for Australian Public Policy!
 author:
   - name: Matt Cowgill 
     url: https://mattcowgill.com
@@ -19,5 +19,4 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-
-Some text goes here! And other stuff!
+Great things to come.

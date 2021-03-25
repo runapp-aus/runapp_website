@@ -1,0 +1,21 @@
+---
+title: "Data Science in the Public Sector #1"
+description: |
+  Fun, free online workshop on doing data science in the public sector.
+author:
+  - name: Matt Cowgill
+date: 03-25-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Get excited! `runapp` will host its first public event on Wednesday 7 April, when R superstar Miles McBain leads a discussion about doing data science in the public sector.
+
+Sign up for free to attend this Zoom event at [Eventbrite](https://www.eventbrite.com.au/e/data-science-in-the-public-sector-1-miles-mcbain-tickets-148104417299).
+
+![](images/runapp_workshop_1.png)
