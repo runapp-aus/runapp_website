@@ -1,5 +1,7 @@
 ---
-title: "runapp"
+title: ""
 site: distill::distill_website
 listing: posts
 ---
+
+# <img src="images/runapp_logo.png" align = "left" height = "139"/> <span style="line-height:1.05;"> <br>&nbsp;R Users' Network for <br>&nbsp;Australian Public Policy </span>

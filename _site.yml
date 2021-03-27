@@ -4,8 +4,6 @@ description: |
   runapp
 output_dir: "docs"
 navbar:
-  logo:
-    image: images/runapp_logo.png
   right:
     - text: "Home"
       href: index.html
