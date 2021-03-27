@@ -1,11 +1,11 @@
 ---
-title: "About this blog"
+title: "About runapp"
 description: |
-  Some additional details about runapp go here
+  The R Users' Network for Australian Public Policy
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-runapp! It's cool and good!
+Insert details about `runapp` here!

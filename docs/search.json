@@ -2,25 +2,33 @@
   "articles": [
     {
       "path": "about.html",
-      "title": "About this blog",
-      "description": "Some additional details about runapp go here",
+      "title": "About runapp",
+      "description": "The R Users' Network for Australian Public Policy",
       "author": [],
-      "contents": "\nrunapp! It’s cool and good!\n\n\n\n",
-      "last_modified": "2021-03-27T14:24:05+11:00"
+      "contents": "\nInsert details about runapp here!\n\n\n\n",
+      "last_modified": "2021-03-27T14:32:26+11:00"
     },
     {
       "path": "code-of-conduct.html",
       "title": "Code of Conduct",
       "author": [],
       "contents": "\nOur Pledge\nIn the interest of fostering an open and welcoming environment, we as members of the runapp community pledge to making participation in our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.\nOur Standards\nWe expect our standards to be upheld on any runapp community spaces, which can include Slack, GitHub, Twitter, meetups, mailing lists, both online and offline.\nExamples of behaviour that contributes to creating a positive environment include:\nusing welcoming and inclusive language;\nbeing respectful of differing viewpoints and experiences;\ngracefully accepting constructive criticism;\nfocusing on what is best for the community;\nshowing empathy towards other community members.\nExamples of unacceptable behaviour by participants include:\nthe use of sexualized language or imagery and unwelcome sexual attention or advances;\ntrolling, insulting/derogatory comments, and personal or political attacks;\npublic or private harassment;\npublishing others’ private information, such as a physical or electronic address, without explicit permission;\nother conduct which could reasonably be considered inappropriate in a professional setting.\nWhen using the community Slack workspace:\nAvoid using offensive usernames or profile photos which might detract from a friendly, safe and welcoming environment for all.\nDo not publish text/screenshots of anything shared in Slack without explicit consent from the author. This includes screenshots of private messages to public channels, as well as conversations on public channels to anywhere outside of the runapp Slack.\nPromotion of commercial products and services is allowed if it is relevant to the group’s purpose, does not saturate communications within Slack and the promoters have demonstrated other contributions to the runapp community.\nOur Responsibilities\nThe runapp committee are responsible for clarifying the standards of acceptable behaviour and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behaviour.\nOn GitHub, the runapp committee have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviours that they deem inappropriate, threatening, offensive, or harmful.\nScope\nThis Code of Conduct applies within runapp community spaces, and in when an individual is representing the runapp community. Examples of representing the community include using an official runapp e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event.\nEnforcement\nInstances of abusive, harassing, or otherwise unacceptable behaviour must be reported by contacting a member of the runapp committee via Slack or at william.mackey@grattaninstitute.edu.au. The runapp committee will investigate all complaints, and will respond in a way that it deems appropriate to the circumstances.\nThe runapp committee is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.\nrunapp community members who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project’s leadership.\nAttribution\nThis Code of Conduct is adapted from the tidyverse Contributor Code of Conduct and r-ladies code of conduct.\n\n\n\n",
-      "last_modified": "2021-03-27T14:24:06+11:00"
+      "last_modified": "2021-03-27T14:31:19+11:00"
     },
     {
       "path": "index.html",
       "title": "",
       "author": [],
       "contents": "\n  R Users’ Network for  Australian Public Policy \n\n\n\n",
-      "last_modified": "2021-03-27T14:24:06+11:00"
+      "last_modified": "2021-03-27T14:31:20+11:00"
+    },
+    {
+      "path": "join.html",
+      "title": "Join `runapp`",
+      "description": "Join the discussion on Slack\n",
+      "author": [],
+      "contents": "\nAre you an R user, or aspiring user, who works in or around the Australian public sector or policy world? Join our discussion on Slack! It’s a friendly, welcoming place to share tips and ask questions about R, common datasets, IT challenges, and more.\n\n\n\n",
+      "last_modified": "2021-03-27T14:32:53+11:00"
     }
   ],
   "collections": ["posts/posts.json"]

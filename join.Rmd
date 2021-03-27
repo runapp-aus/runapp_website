@@ -1,0 +1,16 @@
+---
+title: "Join runapp"
+description: |
+  Join the discussion on Slack
+# author:
+#   - name: Matt Cowgill 
+# date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Are you an R user, or aspiring user, who works in or around the Australian public sector or policy world? [Join our discussion on Slack!](https://join.slack.com/t/runapp-group/shared_invite/zt-o5juw0o3-LXeqTtnK6ly7HM7Z1WlQAQ) It's a friendly, welcoming place to share tips and ask questions about R, common datasets, IT challenges, and more.
+
