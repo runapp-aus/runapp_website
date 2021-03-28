@@ -3,34 +3,24 @@
     "path": "posts/2021-03-25-data-science-in-the-public-sector-1/",
     "title": "Data Science in the Public Sector #1",
     "description": "Fun, free online workshop on doing data science in the public sector.",
-    "author": [
-      {
-        "name": "Matt Cowgill",
-        "url": {}
-      }
-    ],
+    "author": [],
     "date": "2021-03-25",
     "categories": [],
     "contents": "\nGet excited! runapp will host its first public event on Wednesday 7 April, when R superstar Miles McBain leads a discussion about doing data science in the public sector.\nSign up for free to attend this Zoom event at Eventbrite.\n\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-03-25T21:51:13+11:00",
+    "last_modified": "2021-03-27T19:57:52+11:00",
     "input_file": {}
   },
   {
     "path": "posts/welcome/",
     "title": "Welcome to runapp",
-    "description": "Lorem! Ipsum!",
-    "author": [
-      {
-        "name": "Matt Cowgill",
-        "url": "https://mattcowgill.com"
-      }
-    ],
+    "description": "The R Users' Network for Australian Public Policy!",
+    "author": [],
     "date": "2020-12-10",
     "categories": [],
-    "contents": "\nSome text goes here! And other stuff!\n\n\n\n",
+    "contents": "\nGreat things to come.\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-03-25T21:45:09+11:00",
+    "last_modified": "2021-03-27T19:58:22+11:00",
     "input_file": {}
   }
 ]

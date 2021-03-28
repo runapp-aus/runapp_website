@@ -10,7 +10,6 @@
     <lastBuildDate>Thu, 25 Mar 2021 00:00:00 +0000</lastBuildDate>
     <item>
       <title>Data Science in the Public Sector #1</title>
-      <dc:creator>Matt Cowgill</dc:creator>
       <link>https://runapp-aus.github.io/runapp_website/posts/2021-03-25-data-science-in-the-public-sector-1</link>
       <description>Fun, free online workshop on doing data science in the public sector.</description>
       <guid>https://runapp-aus.github.io/runapp_website/posts/2021-03-25-data-science-in-the-public-sector-1</guid>
@@ -18,9 +17,8 @@
     </item>
     <item>
       <title>Welcome to runapp</title>
-      <dc:creator>Matt Cowgill</dc:creator>
       <link>https://runapp-aus.github.io/runapp_website/posts/welcome</link>
-      <description>Lorem! Ipsum!</description>
+      <description>The R Users' Network for Australian Public Policy!</description>
       <guid>https://runapp-aus.github.io/runapp_website/posts/welcome</guid>
       <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
     </item>

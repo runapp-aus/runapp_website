@@ -4,4 +4,8 @@ site: distill::distill_website
 listing: posts
 ---
 
-# <img src="images/runapp_logo.png" align = "left" height = "139"/> <span style="line-height:1.05;"> <br>&nbsp;R Users' Network for <br>&nbsp;Australian Public Policy </span>
+<table style="width:100%">
+  <tr style = "height:140pt">
+    <td style="width:110pt"><img src="images/runapp_logo.png" align = "right" height = "139pt"/></td>
+    <td><h1><span style="line-height:1.05;">R Users Network for Australian Public Policy</span></h1></td>
+</table>

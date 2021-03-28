@@ -2,8 +2,8 @@
 title: "Data Science in the Public Sector #1"
 description: |
   Fun, free online workshop on doing data science in the public sector.
-author:
-  - name: Matt Cowgill
+# author:
+#   - name: Matt Cowgill
 date: 03-25-2021
 output:
   distill::distill_article:
