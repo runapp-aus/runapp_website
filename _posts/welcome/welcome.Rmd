@@ -1,7 +1,7 @@
 ---
 title: "Welcome to runapp"
 description: |
-  The R Users' Network for Australian Public Policy!
+  The R Users Network for Australian Public Policy!
 # author:
 #   - name: Matt Cowgill 
 #     url: https://mattcowgill.com

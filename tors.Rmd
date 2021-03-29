@@ -1,0 +1,37 @@
+---
+title: "Terms of reference"
+description: |
+  Draft terms of reference for runapp.
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+*The terms of reference below have been proposed but not yet formally adopted by `runapp`*
+
+# Objective
+
+The objective of this document is to set out the purpose for the founding of the R Users Network of Australian Public Policy (`runapp`) and lays out its intended objectives as a guide to the committee and the membership.
+
+# Purpose of the group
+
+Data analysis is becoming increasingly important in public policy and the public sector. R is a key tool used for data analysis. But, for a number of years, the R user community in public policy has operated in isolation. There are a number of R groups within bigger organisations (such as the PC and RBA) but their presence across the board has been small and limited. There are immense benefits to community R organisations as has been seen in the success of R user groups such as R-Ladies, ropensci and ozunconf.
+
+Underpinned by the appreciation of open source tools, these groups and organisations are aimed at fostering a deeper understanding of R and building a community of users who might give back. It is with this ethos that the group was created. 
+
+`runapp` supports an inclusive and vibrant **community** of R users working in public policy and the public sector by curating **resources** for using R effectively; developing and maintaining **packages** for common tasks; and **supporting** more efficient and reproducible data analysis in public policy.
+
+We do this by encouraging the take-up of R by people working in Australian public policy and the public sector through:
+
+-   Creating R resources that are relevant to both the tasks commonly undertaken by policy and public sector analysts, including resources that are specific to the use of Australian data;
+
+-   Hosting workshops, seminars and other events to spread information about the use of R and for sharing tips and tricks;
+
+-   Providing a forum for code reviews, technical discussions, and advice for those who might not work in an organisation with many R coders or technical colleagues;
+
+-   Identifying and developing packages that will be useful for users; and
+
+-   Maintaining a website and other communications channels like Slack to encourage communication among members about how to solve common R problems and common problems encountered when conducting data analysis in the public sector in Australia.\

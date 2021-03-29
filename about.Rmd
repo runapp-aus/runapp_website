@@ -1,11 +1,17 @@
 ---
 title: "About runapp"
 description: |
-  The R Users' Network for Australian Public Policy
+  The R Users Network for Australian Public Policy
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Insert details about `runapp` here!
+We're a community of people who work in Australian public policy or the public sector and use -- or aspire to use -- [R](https://cran.r-project.org), the popular language for doing analysing data.
+
+`runapp` supports an inclusive and vibrant **community** of R users working in public policy and the public sector by curating **resources** for using R effectively; developing and maintaining **packages** for common tasks; and **supporting** more efficient and reproducible data analysis in public policy.
+
+Read more about `runapp` in our [Terms of Reference](tors.html).
+
+[Join the community on Slack](join.html).
