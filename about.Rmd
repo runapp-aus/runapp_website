@@ -8,7 +8,7 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-We're a community of people who work in Australian public policy or the public sector and use -- or aspire to use -- [R](https://cran.r-project.org), the popular language for doing analysing data.
+We're a community of people who work in Australian public policy or the public sector and use -- or aspire to use -- [R](https://cran.r-project.org), the popular language for analysing data.
 
 `runapp` supports an inclusive and vibrant **community** of R users working in public policy and the public sector by curating **resources** for using R effectively; developing and maintaining **packages** for common tasks; and **supporting** more efficient and reproducible data analysis in public policy.
 
