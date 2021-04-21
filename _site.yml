@@ -11,6 +11,8 @@ navbar:
       href: join.html
     - text: "About"
       href: about.html
+    - text: "TORs"
+      hred: tors.html
     - text: "Code of Conduct"
       href: code-of-conduct.html
 output: distill::distill_article

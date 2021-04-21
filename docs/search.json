@@ -3,24 +3,24 @@
     {
       "path": "about.html",
       "title": "About runapp",
-      "description": "The R Users' Network for Australian Public Policy",
+      "description": "The R Users Network for Australian Public Policy",
       "author": [],
-      "contents": "\nInsert details about runapp here!\n\n\n\n",
-      "last_modified": "2021-03-28T12:50:58+11:00"
+      "contents": "\nWe’re a community of people who work in Australian public policy or the public sector and use – or aspire to use – R, the popular language for doing analysing data.\nrunapp supports an inclusive and vibrant community of R users working in public policy and the public sector by curating resources for using R effectively; developing and maintaining packages for common tasks; and supporting more efficient and reproducible data analysis in public policy.\nRead more about runapp in our Terms of Reference.\nJoin the community on Slack.\n\n\n\n",
+      "last_modified": "2021-03-30T09:06:58+11:00"
     },
     {
       "path": "code-of-conduct.html",
       "title": "Code of Conduct",
       "author": [],
       "contents": "\nOur Pledge\nIn the interest of fostering an open and welcoming environment, we as members of the runapp community pledge to making participation in our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.\nOur Standards\nWe expect our standards to be upheld on any runapp community spaces, which can include Slack, GitHub, Twitter, meetups, mailing lists, both online and offline.\nExamples of behaviour that contributes to creating a positive environment include:\nusing welcoming and inclusive language;\nbeing respectful of differing viewpoints and experiences;\ngracefully accepting constructive criticism;\nfocusing on what is best for the community;\nshowing empathy towards other community members.\nExamples of unacceptable behaviour by participants include:\nthe use of sexualized language or imagery and unwelcome sexual attention or advances;\ntrolling, insulting/derogatory comments, and personal or political attacks;\npublic or private harassment;\npublishing others’ private information, such as a physical or electronic address, without explicit permission;\nother conduct which could reasonably be considered inappropriate in a professional setting.\nWhen using the community Slack workspace:\nAvoid using offensive usernames or profile photos which might detract from a friendly, safe and welcoming environment for all.\nDo not publish text/screenshots of anything shared in Slack without explicit consent from the author. This includes screenshots of private messages to public channels, as well as conversations on public channels to anywhere outside of the runapp Slack.\nPromotion of commercial products and services is allowed if it is relevant to the group’s purpose, does not saturate communications within Slack and the promoters have demonstrated other contributions to the runapp community.\nOur Responsibilities\nThe runapp committee are responsible for clarifying the standards of acceptable behaviour and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behaviour.\nOn GitHub, the runapp committee have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviours that they deem inappropriate, threatening, offensive, or harmful.\nScope\nThis Code of Conduct applies within runapp community spaces, and in when an individual is representing the runapp community. Examples of representing the community include using an official runapp e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event.\nEnforcement\nInstances of abusive, harassing, or otherwise unacceptable behaviour must be reported by contacting a member of the runapp committee via Slack or at william.mackey@grattaninstitute.edu.au. The runapp committee will investigate all complaints, and will respond in a way that it deems appropriate to the circumstances.\nThe runapp committee is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.\nrunapp community members who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project’s leadership.\nAttribution\nThis Code of Conduct is adapted from the tidyverse Contributor Code of Conduct and r-ladies code of conduct.\n\n\n\n",
-      "last_modified": "2021-03-28T12:50:59+11:00"
+      "last_modified": "2021-03-30T09:06:59+11:00"
     },
     {
       "path": "index.html",
       "title": "",
       "author": [],
       "contents": "\n\n\n\n\nR Users Network for Australian Public Policy\n\n\n\n\n\n",
-      "last_modified": "2021-03-28T12:50:59+11:00"
+      "last_modified": "2021-03-30T09:06:59+11:00"
     },
     {
       "path": "join.html",
@@ -28,7 +28,16 @@
       "description": "Join the discussion on Slack\n",
       "author": [],
       "contents": "\nAre you an R user, or aspiring user, who works in or around the Australian public sector or policy world? Join our discussion on Slack! It’s a friendly, welcoming place to share tips and ask questions about R, common datasets, IT challenges, and more.\n\n\n\n",
-      "last_modified": "2021-03-28T12:51:00+11:00"
+      "last_modified": "2021-03-30T09:07:00+11:00"
+    },
+    {
+      "path": "tors.html",
+      "title": "Terms of reference",
+      "description": "Draft terms of reference for runapp.\n",
+      "author": [],
+      "date": "`r Sys.Date()`",
+      "contents": "\nThe terms of reference below have been proposed but not yet formally adopted by runapp\nObjective\nThe objective of this document is to set out the purpose for the founding of the R Users Network of Australian Public Policy (runapp) and lays out its intended objectives as a guide to the committee and the membership.\nPurpose of the group\nData analysis is becoming increasingly important in public policy and the public sector. R is a key tool used for data analysis. But, for a number of years, the R user community in public policy has operated in isolation. There are a number of R groups within bigger organisations (such as the PC and RBA) but their presence across the board has been small and limited. There are immense benefits to community R organisations as has been seen in the success of R user groups such as R-Ladies, ropensci and ozunconf.\nUnderpinned by the appreciation of open source tools, these groups and organisations are aimed at fostering a deeper understanding of R and building a community of users who might give back. It is with this ethos that the group was created. \nrunapp supports an inclusive and vibrant community of R users working in public policy and the public sector by curating resources for using R effectively; developing and maintaining packages for common tasks; and supporting more efficient and reproducible data analysis in public policy.\nWe do this by encouraging the take-up of R by people working in Australian public policy and the public sector through:\nCreating R resources that are relevant to both the tasks commonly undertaken by policy and public sector analysts, including resources that are specific to the use of Australian data;\nHosting workshops, seminars and other events to spread information about the use of R and for sharing tips and tricks;\nProviding a forum for code reviews, technical discussions, and advice for those who might not work in an organisation with many R coders or technical colleagues;\nIdentifying and developing packages that will be useful for users; and\nMaintaining a website and other communications channels like Slack to encourage communication among members about how to solve common R problems and common problems encountered when conducting data analysis in the public sector in Australia.\n\n\n\n",
+      "last_modified": "2021-03-30T09:07:30+11:00"
     }
   ],
   "collections": ["posts/posts.json"]
