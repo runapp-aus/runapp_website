@@ -1,0 +1,212 @@
+---
+title: "R Learning Resources"
+description: |
+  Curated list of R learning resources
+output: 
+  distill::distill_article:
+    toc: true
+---
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rvest)
+library(dplyr)
+library(purrr)
+library(htmltools)
+library(knitr)
+
+```
+
+<style>
+.card {
+ 
+border: 2px solid #e7e7e7;
+padding: .5rem;
+ 
+}
+</style>
+
+
+```{r functions, echo=FALSE}
+
+
+read_meta <- function(url){
+  
+  doc <- readLines(url, n = 100) # add way to check for end of header and iterate if not found
+  
+  meta <- doc[grepl('meta|head', doc)] |>
+    paste(collapse = '') |>
+    read_html() |>
+    html_nodes('meta') %>%
+    map_dfr(~ tibble(property = html_attr(.x, 'property'),
+                     content = html_attr(.x, 'content'))) |>
+    filter(!is.na(property))
+    
+  if (nrow(meta) == 0) {
+    meta  <- doc[grepl('meta|head', doc)] |>
+      paste(collapse = '') |>
+      read_html() |>
+      html_nodes('meta') %>%
+      map_dfr(~ tibble(property = html_attr(.x, 'name'),
+                       content = html_attr(.x, 'content'))) |>
+      filter(!is.na(property))
+  }
+  
+  return(meta)
+  
+}
+
+
+card_url <- function(url, description){
+  
+  details <- read_meta(url) |>
+    distinct()
+  
+  if (nrow(details) == 0) {
+    details <- tribble(~ property,       ~ content,
+                       'og:url',         .data$url,
+                       'og:description', .data$description)
+  }
+  
+  tagList(
+    div(class = 'card rounded border-dark',
+      div(class="row no-gutters",
+          div(class = 'col-sm-7',
+              div(class = 'card-body',
+                  h4(class = 'card-title',
+                     details |> filter(property == 'og:title') |> pull(content)),
+                  h5(a(href = details |> filter(property == 'og:url') |> pull(content),
+                     details |> filter(property == 'og:site_name') |> pull(content))),
+                  p(class="card-text text-secondary",
+                    details |> filter(property == 'og:description') |> pull(content),
+                    details |> filter(property == 'article:modified_time') |> pull(content))
+                )
+              ),
+          div(class = 'col-sm-5',
+              img(class="card-img-top h-100",
+                  src = details |> filter(property == 'og:image') |> pull(content))
+              )
+          )
+      ),
+    br(), br()
+    )
+}
+
+safe_card <- safely(card_url)
+```
+
+
+```{r lists, echo=FALSE}
+tutorials <- tribble(~ link,                                                ~ comment,
+                     'https://juliasilge.com/blog/learn-tidytext-learnr/',  'learnr tutorial')
+
+
+guides <-  tribble(~ link,                                                ~ comment,
+                   'https://grattan.github.io/R_at_Grattan/index.html',   'R introduction and style quide',
+                   'https://rladiessydney.org/courses/ryouwithme/',       "beginners introduction to R",
+                   "http://rtoolbox.rbind.io/general/",                   "book style R and data analysis introduction course",
+                   "https://education.rstudio.com/learn/beginner/",       "rstudio beginners courses",
+                   "https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html", "learnr introduction course",
+                   "https://www.adventures-in-r.com/",                    "r course with videos and links to resources",
+                   "https://robust-tools.djnavarro.net/data-visualisation/", "introduction to R course with various resources"
+)
+
+
+books <- tribble(~ link,                                                ~ comment,
+                 "https://r4ds.had.co.nz/",                             "R for data science",
+                 "https://www.rstudio.com/resources/cheatsheets/",      "RStudio cheatsheets",
+                 "https://stat545.com/",                                "Data wrangling, exploration, and analysis with R",
+                 "https://learningstatisticswithr.com/",                "R course aimed at psychology students",
+                 "https://ggplot2-book.org/",                           "ggplot guide",
+                 "https://otexts.com/fpp2/",                            "Forecasting: Principles and Practice",
+                 "https://www.bigbookofr.com/",                         "big book of R",
+                 "https://datasciencebox.org/",                         "data science in a box",
+                 "https://rstudio-education.github.io/hopr/",           "hands on programing with R"
+)
+
+
+videos <- tribble(~ link,                                     ~ comment,
+                  "https://youtu.be/y9KJmUGc8SE",             'dplyr data wrangling introduction'
+)
+
+
+blogs <- tribble(~ link,                                     ~ comment,
+                 "https://juliasilge.com/blog/",             "")
+
+
+course_materials <- tribble(~ link,                       ~ comment,
+                            'http://stats220.earo.me/',   "lecture slide packs using xarigan",
+                            'https://wcd.numbat.space/',  "course study materials including rmd downloads",
+                            "https://github.com/numbats/ida",  "introduction to data analysis subject materials",
+                            "https://github.com/numbats/wcd",  "wild caught data subject materials",
+                            "https://github.com/numbats/cwd",  "communicating with data subject materials",
+                            "https://github.com/numbats/eda",  "exploratory data analysis subject materials",
+                            "https://github.com/numbats/iml",  "introduction to machine learning subject materials",
+                            "https://github.com/uo-ec607/lectures", "data science for economists, course materials",
+                            "http://www2.stat.duke.edu/courses/Fall17/sta112.01/syllabus/", "pdf slide decks with suggested readings",
+                            "https://cslu.ohsu.edu/~bedricks/courses/cs631/",  "course outline with extensive reading list",
+                            "https://evalsp22.classes.andrewheiss.com/", "program evaluation for public service, lots of links to resources and videos",
+                            "https://datavizs21.classes.andrewheiss.com/", "data visualisation learnr lessons are available, lots of links to resources and videos"
+                            )
+
+
+tools <- tribble(~ link,                                  ~ comment,
+                 "https://swirlstats.com/students.html",  'interactive R lessons in the console')
+
+
+lists <- tribble(~ link,                 ~ comment,
+                 "https://osf.io/be7yt/wiki/Learning%20R/",   "ANZORN OSF R resources page",
+                 "https://www.njtierney.com/resources/",      "Nick Tierney's curated list of R resources")
+
+
+
+output_list <- list("Books" = books,
+                    "Guides" = guides,
+                    "Tutorials" = tutorials,
+                    "Blogs" = blogs,
+                    "Videos" = videos,
+                    "Course Materials" = course_materials,
+                    "Learning Tools" = tools,
+                    "Resource Lists" = lists
+                    )
+```
+
+
+
+
+
+```{r print cards, results='asis', echo=FALSE, message=FALSE, warning=FALSE, comment='##'}
+
+for (i in names(output_list)) {
+   
+  cat("\n\n") 
+  cat("##", i, "\n") # Create second level headings with the names.
+  
+  x <- output_list[[i]] |>
+      split(f = output_list[[i]]$link) |>
+      map(~ safe_card(.x$link, .x$comment)) |>
+      keep(~ !is.null(.x$result)) 
+  
+  names(x) <- NULL
+  
+  xx <- lapply(x, function(x){x$result})
+
+  cat(
+    knit_print(
+      tagList(xx, br(), br())
+      )
+    )
+}
+
+
+```
+
+
