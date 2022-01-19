@@ -9,13 +9,18 @@ output:
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
+<script src="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css"></script>
+
+
+
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
 
 library(rvest)
 library(dplyr)
@@ -23,6 +28,21 @@ library(purrr)
 library(htmltools)
 library(knitr)
 
+# withTags(
+#   head(
+#     link(rel="stylesheet",
+#          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
+#          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T",
+#          crossorigin="anonymous"),
+#     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js",
+#            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1",
+#            crossorigin="anonymous"),
+#     script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js",
+#            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM",
+#            crossorigin="anonymous"),
+#     script(src="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css")
+#     )
+#   )
 ```
 
 <style>
@@ -41,26 +61,27 @@ padding: .5rem;
 read_meta <- function(url){
   
   doc <- readLines(url, n = 300) |> # add way to check for end of header and iterate if not found
-    paste0(collapse = '') |> # cleans parts of page where tag contents are across multiple rows
-    iconv(to = '') |>
-    gsub('Ã¢â‚¬â„¢', "'", .) |>
+    paste0(collapse = '') #|> # cleans parts of page where tag contents are across multiple rows
+    #iconv(to = 'UTF-8') 
+  
+  nodes <- gsub('Ã¢â‚¬â„¢', "'", doc) |>
     read_html() |>
     html_nodes('meta, title')
 
-  meta <- doc |>
+  meta <- nodes |>
     map_dfr(~ tibble(property = html_attr(.x, 'property'),
                      content = html_attr(.x, 'content'))) |>
     filter(!is.na(property))
     
   if (nrow(meta) == 0) {
-    meta <- doc |>
+    meta <- nodes |>
       map_dfr(~ tibble(property = html_attr(.x, 'name'),
                        content = html_attr(.x, 'content'))) |>
       filter(!is.na(property))
   }
   
   # check for a title
-  title <- doc |> html_nodes(xpath = "/html/head/title2") |> html_text()
+  title <- nodes |> html_nodes(xpath = "/html/head/title2") |> html_text()
   title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
   
   if (length(title) > 0) {
@@ -102,7 +123,27 @@ card_url <- function(url, title, description, image, metadata_available){
   card_img <- details |> filter(property == 'og:image') |> pull(content)
   card_img_alt <- details |> filter(property == 'og:image:alt') |> pull(content) # TODO: use title if metadata missing
   
+  card_title_clean <- gsub('Ã‚Â', " ", iconv(card_title))
+  card_text_clean <- gsub('Ã¢â‚¬â„¢', "'", iconv(card_text))
   
+  # update input data list from web
+  if (is.na(out[out$link == url, 'title'])) {
+    out <- out |> 
+      mutate(title = ifelse(.data$link == .env$url, 
+                            .env$card_title_clean, 
+                            .data$title))
+  }
+
+  if (is.na(out[out$link == url, 'comment'])) {
+    out <- out |> 
+      mutate(comment = ifelse(.data$link == .env$url, 
+                              .env$card_text_clean, 
+                              .data$title))
+  }
+
+  
+  
+  # render bootstrap card
   div(class = 'card rounded border-dark',
       style = 'margin-bottom:70px',
       div(class="row no-gutters",
@@ -113,7 +154,7 @@ card_url <- function(url, title, description, image, metadata_available){
                        iconv(card_title))
                      ),
                   p(class="card-text text-secondary",
-                    iconv(card_text, to = 'UTF-8'))
+                    card_text_clean, to = 'UTF-8')
                 )
               ),
           div(class = 'col-sm-5',
@@ -127,8 +168,8 @@ safe_card <- safely(card_url)
 
 
 resources_add <- function(input_list, type){
-    x <- output_list[[type]] |>
-      split(f = output_list[[type]]$link) |>
+    x <- input_list[[type]] |>
+      split(f = input_list[[type]]$link) |>
       map(~ safe_card(.x$link, .x$title, .x$comment, .x$img, .x$metadata_available)) |>
       keep(~ !is.null(.x$result)) 
     
@@ -142,7 +183,7 @@ resources_add <- function(input_list, type){
 ```
 
 
-```{r lists, echo=FALSE}
+```{r lists}
 
 out <- readr::read_csv('data/resources.csv') %>%
   mutate(metadata_available = metadata_available == 'yes')
@@ -156,7 +197,7 @@ output_list <- split(out, out$type)
 
 
 
-```{r print books, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, comment='##'}
+```{r print books}
 
 br <- resources_add(output_list, 'Books')
 
@@ -171,7 +212,7 @@ br
 
 
 
-```{r print Guides, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE, comment='##'}
+```{r print Guides}
 
 gr <- resources_add(output_list, 'Guides')
 
@@ -180,15 +221,162 @@ gr
 ```
 
 
-## Search by Tags
+## Tutorials
+
+```{r print Tutorials}
+
+tr <- resources_add(output_list, 'Tutorials')
+
+tr
+
+```
 
 
 
-```{r tags}
+## Blogs
 
-dt <- out %>%
-  select(type, link) %>%
-  DT::datatable(rownames = FALSE, filter = list(position = 'top'))
+```{r print Blogs}
+
+blr <- resources_add(output_list, 'Blogs')
+
+blr
+
+```
+
+
+
+
+
+## Videos
+
+```{r print Videos}
+
+vr <- resources_add(output_list, 'Videos')
+
+vr
+
+```
+
+
+
+## Learning Tools
+
+```{r print Learning Tools}
+
+ltr <- resources_add(output_list, 'Learning Tools')
+
+ltr
+
+```
+
+
+
+## Course Materials
+
+```{r print Course Materials}
+
+cmr <- resources_add(output_list, 'Course Materials')
+
+cmr
+
+```
+
+
+
+## Other Resource Lists
+
+```{r print Resource Lists}
+
+rlr <- resources_add(output_list, 'Resource Lists')
+
+rlr
+
+```
+
+
+
+
+## Search
+
+
+
+```{r search, echo=FALSE}
+
+dt <- out |>
+  select(type, link, description = comment) |>
+  mutate(description = iconv(description),
+         link = glue::glue('<a href={link}>{link}</a>')) |>
+  DT::datatable(rownames = FALSE, 
+                escape = FALSE,
+                filter = list(position = 'top'), 
+                options = list(pageLength = 5,
+                               searchHighlight = TRUE))
 
 dt
 ```
+
+
+
+## Add to this Page
+
+If you know of a resource that you think should be included on this list you are welcome to add it. Simply fork this repo make your changes and [submit a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
+
+All the resources in this are organised via a [CSV file](https://github.com/runapp-aus/runapp_website/blob/r-resources/data/resources.csv). When you look at this list you will not that some entries only have values in the first 3 fields:
+
+1. type	
+2. metadata_available	
+3. link
+
+In these cases the `metadata_available` value is "yes". This means that all the needed metadata can be automatically downloaded via the resources web metadata.
+
+You can test yourself if the metadata of the resource you wish to add is available using the following helper function.
+
+```r
+read_meta <- function(url){
+  
+  doc <- readLines(url, n = 300) |> 
+    paste0(collapse = '') #|> 
+  
+  nodes <- gsub('Ã¢â‚¬â„¢', "'", doc) |>
+    read_html() |>
+    html_nodes('meta, title')
+
+  meta <- nodes |>
+    map_dfr(~ tibble(property = html_attr(.x, 'property'),
+                     content = html_attr(.x, 'content'))) |>
+    filter(!is.na(property))
+    
+  if (nrow(meta) == 0) {
+    meta <- nodes |>
+      map_dfr(~ tibble(property = html_attr(.x, 'name'),
+                       content = html_attr(.x, 'content'))) |>
+      filter(!is.na(property))
+  }
+  
+  # check for a title
+  title <- nodes |> html_nodes(xpath = "/html/head/title2") |> html_text()
+  title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
+  
+  if (length(title) > 0) {
+    meta <- meta |>
+      add_row(property = title_tag,
+              content = title)
+  }
+  
+  return(meta)
+  
+}
+```
+
+Just run the function in R to get a table of available metadata. What we are looking for here are fields for a title, description and image. Usually these fields are prefixed with `og:` which indicates they comply with the [Open Graph metadata](https://ogp.me/) standard. Indeed if we test the Open Graph website, we get the following:
+
+```{r, echo=TRUE}
+read_meta('https://ogp.me/') |> knitr::kable()
+```
+
+
+If you get a complete metadata record simply add the details to the first three fields, including `metadata_available` as "yes". Where a resources metadata does not include a title, description and image; please add these additional fields to the CSV and set `metadata_available` value as "no".
+
+And that's it. You have added a new R resource to the list.
+
+
