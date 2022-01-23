@@ -1,12 +1,12 @@
 type,metadata_available,link,title,comment,img,tags
-Books,no,https://r4ds.had.co.nz/,R for Data Science,"This book will teach you how to do data science with R: You’ll learn how to get your data into R, get it into the most useful structure, transform it, visualise it and model it. In this book, you will find a practicum of skills for data science.",https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png,
+Books,no,https://r4ds.had.co.nz/,R for Data Science,"This book will teach you how to do data science with R: Youï¿½ll learn how to get your data into R, get it into the most useful structure, transform it, visualise it and model it. In this book, you will find a practicum of skills for data science.",https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png,
 Guides,no,https://www.rstudio.com/resources/cheatsheets/,RStudio cheatsheets,RStudio cheatsheets,https://raw.githubusercontent.com/rstudio/cheatsheets/main/pngs/data-transformation.png,
 Books,yes,https://stat545.com/,,,,
 Books,image only,https://learningstatisticswithr.com/,Learning Statistics with R,R book and course by Danielle Navarro aimed at psychology students,,
-Books,needs description and image,https://ggplot2-book.org/,ggplot2: Elegant Graphics for Data Analysis,"This is the on-line version of work-in-progress 3rd edition of “ggplot2: elegant graphics for data analysis” published by Springer. You can learn what’s changed from the 2nd edition in the Preface. 
+Books,needs description and image,https://ggplot2-book.org/,ggplot2:ï¿½Elegant Graphics for Data Analysis,"This is the on-line version of work-in-progressï¿½3rd editionï¿½of ï¿½ggplot2: elegant graphics for data analysisï¿½ published by Springer. You can learn whatï¿½s changed from the 2nd edition in theï¿½Preface. 
 
-While this book gives some details on the basics of ggplot2, its primary focus is explaining the Grammar of Graphics that ggplot2 uses, and describing the full details. It is not a cookbook, and won’t necessarily help you create any specific graphic that you need. But it will help you understand the details of the underlying theory, giving you the power to tailor any plot specifically to your needs.",https://ggplot2-book.org/cover.jpg,data visualisation
-Books,part neads description,https://otexts.com/fpp2/,,"This textbook is intended to provide a comprehensive introduction to forecasting methods and to present enough information about each method for readers to be able to use them sensibly. We don’t attempt to give a thorough discussion of the theoretical details behind each method, although the references at the end of each chapter will fill in many of those details.",,forecasting
+While this book gives some details on the basics of ggplot2, its primary focus is explaining the Grammar of Graphics that ggplot2 uses, and describing the full details. It is not aï¿½cookbook, and wonï¿½t necessarily help you create any specific graphic that you need. But it will help you understand the details of the underlying theory, giving you the power to tailor any plot specifically to your needs.",https://ggplot2-book.org/cover.jpg,data visualisation
+Books,part neads description,https://otexts.com/fpp2/,,"This textbook is intended to provide a comprehensive introduction to forecasting methods and to present enough information about each method for readers to be able to use them sensibly. We donï¿½t attempt to give a thorough discussion of the theoretical details behind each method, although the references at the end of each chapter will fill in many of those details.",,forecasting
 Books,yes,https://www.bigbookofr.com/,,,,
 Books,no,https://datasciencebox.org/,Data Science in a Box,How can we effectively and efficiently teach data science to students with little to no background in computing and statistical thinking? How can we equip them with the skills and tools for reasoning with various types of data and leave them wanting to learn more? This introductory data science course is our (working) answer to this question.,https://datasciencebox.org/dsbox.png,
 Books,yes,https://rstudio-education.github.io/hopr/,,hands on programing with R,,
@@ -16,9 +16,9 @@ Guides,yes,https://rladiessydney.org/courses/ryouwithme/,,,,
 Guides,no,http://rtoolbox.rbind.io/general/,R Toolbox,"This course is designed to give you an appreciation of R programming as a tool for data exploration. It focuses on packages that will help you do exploratory data analysis, visualisation and communication in a dynamic and reproducible manner.",http://rtoolbox.rbind.io/general/images/data_image.jpg,
 Guides,no,https://education.rstudio.com/learn/beginner/,,,https://education.rstudio.com/learn/beginner/feature-mtsalsa-750.jpg,
 Guides,no,https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html,"TEACUPS, GIRAFFES, & STATISTICS","A delightful series of modules to learn statistics and R coding for students, scientists, and stats-enthusiasts.",https://tinystats.github.io/teacups-giraffes-and-statistics/images/big_image/Ship.jpg,
-Guides,no,https://www.adventures-in-r.com/,,"On this site, you will find materials for a full, 8-week, college-level course focused on learning to use R for Data Science and Statistical Analysis.
+Guides,no,https://www.adventures-in-r.com/,,"On this site, you will find materials for a full, 8-week, college-level course focused on learning to useï¿½R for Data Science and Statistical Analysis.
 
-This course was created by Dr. Kelly Bodwin. The materials shared here are free and open source, and may be shared and adapted under the Creative Commons license.",https://www.adventures-in-r.com/authors/admin/avatar_hu4dd4fafbd03c4d1a001bed4e53e4bb44_6548858_270x270_fill_q90_lanczos_center.jpeg,
+This course was created byï¿½Dr. Kelly Bodwin. The materials shared here are free and open source, and may be shared and adapted under theï¿½Creative Commons license.",https://www.adventures-in-r.com/authors/admin/avatar_hu4dd4fafbd03c4d1a001bed4e53e4bb44_6548858_270x270_fill_q90_lanczos_center.jpeg,
 Guides,image only,https://robust-tools.djnavarro.net/data-visualisation/,DATA SCIENCE WITH R,An introductory course by Danielle Navarro,,
 Tutorials,yes,https://juliasilge.com/blog/learn-tidytext-learnr/,,learnr tutorial,,text analysis
 Blogs,yes,https://juliasilge.com/blog/,,,,
@@ -46,3 +46,8 @@ Resource Lists,yes,https://github.com/vanatteveldt/learningr,,,,
 Resource Lists,yes,https://github.com/iamericfletcher/awesome-r-learning-resources,,,,
 Resource Lists,yes,https://github.com/rstudio-education,,,,
 Resource Lists,yes,https://thatdatatho.com/r-resources-beginner-advanced/,,,,
+Course Materials,no,http://stat447.com/,STAT 447 : Data Science Programming Methods,"STAT 447: Data Science Programming Methods is a course in the Department of Statistics at the University of Illinois.
+
+Data Science Programming Methods was first offered in the Spring 2019, Fall 2019 and Fall 2020 terms as the earlier STAT 430: Topics in Applied Statistics course. Starting the Fall 2021 term, it is offered under a new course number STAT 447. The instructor is Dirk Eddelbuettel who also designed the course, and taught the previous instances.
+
+Course lectures slides as well as guest lectures are publically accessible, see the lectures by topic and guest lectures links on the left.",http://stat447.com/images/digitization-image-geralt.medium.jpeg,
