@@ -100,14 +100,16 @@ read_meta <- function(url, n = 400){
 }
 
 
-card_url <- function(url, title, description, image, metadata_available){
+card_url <- function(url, title, description, image, metadata_available, metadata_n){
+  
+  if (is.na(metadata_n)) metadata_n <- 100
   
   metadata_predefined <- tribble(~ property,       ~ content,
                                  'og:url',         url,
                                  'og:title',       title,
                                  'og:description', description,
                                  'og:image',       image)
-  details <- read_meta(url) |>
+  details <- read_meta(url, metadata_n) |>
     distinct()
   
   if (nrow(details) == 0){
@@ -128,21 +130,19 @@ card_url <- function(url, title, description, image, metadata_available){
   card_img <- details |> filter(property == 'og:image') |> pull(content)
   card_img_alt <- details |> filter(property == 'og:image:alt') |> pull(content) # TODO: use title if metadata missing
   
-  card_title_clean <- gsub('Ã‚Â', " ", iconv(card_title))
-  card_text_clean <- gsub('Ã¢â‚¬â„¢', "'", iconv(card_text))
   
   # update input data list from web
   if (is.na(out[out$link == url, 'title'])) {
-    out <- out |> 
+    out <<- out |> 
       mutate(title = ifelse(.data$link == .env$url, 
-                            .env$card_title_clean, 
+                            .env$card_title, 
                             .data$title))
   }
 
-  if (is.na(out[out$link == url, 'comment'])) {
-    out <- out |> 
-      mutate(comment = ifelse(.data$link == .env$url, 
-                              .env$card_text_clean, 
+  if (is.na(out[out$link == url, 'description'])) {
+    out <<- out |> 
+      mutate(description = ifelse(.data$link == .env$url, 
+                              .env$card_text, 
                               .data$title))
   }
 
@@ -159,7 +159,7 @@ card_url <- function(url, title, description, image, metadata_available){
                        iconv(card_title))
                      ),
                   p(class="card-text text-secondary",
-                    card_text_clean, to = 'UTF-8')
+                    card_text)
                 )
               ),
           div(class = 'col-sm-5',
@@ -175,7 +175,7 @@ safe_card <- safely(card_url)
 resources_add <- function(input_list, type){
     x <- input_list[[type]] |>
       split(f = input_list[[type]]$link) |>
-      map(~ safe_card(.x$link, .x$title, .x$comment, .x$img, .x$metadata_available)) |>
+      map(~ safe_card(.x$link, .x$title, .x$description, .x$img, .x$metadata_available, .x$metadata_n)) |>
       keep(~ !is.null(.x$result)) 
     
     names(x) <- NULL
@@ -308,7 +308,7 @@ rlr
 ```{r search, echo=FALSE}
 
 dt <- out |>
-  select(type, link, description = comment) |>
+  select(type, link, description) |>
   mutate(description = iconv(description),
          link = glue::glue('<a href={link}>{link}</a>')) |>
   DT::datatable(rownames = FALSE, 
@@ -337,12 +337,18 @@ In these cases the `metadata_available` value is "yes". This means that all the 
 You can test yourself if the metadata of the resource you wish to add is available using the following helper function.
 
 ```r
-read_meta <- function(url){
+read_meta <- function(url, n = 400){
   
-  doc <- readLines(url, n = 300) |> 
-    paste0(collapse = '') #|> 
+  doc <- readLines(url, n = n) |> # add way to check for end of header and iterate if not found
+    paste0(collapse = '') #|> # cleans parts of page where tag contents are across multiple rows
   
-  nodes <- gsub('Ã¢â‚¬â„¢', "'", doc) |>
+  # clean doc of non-utf characters
+  doc <- gsub('Ã¢â‚¬â„¢', "'", doc)
+  doc <- gsub('â€™', "'", doc)
+  doc <- gsub('Â', "", doc)
+  doc <- gsub('Ã‚Â', " ", doc)
+  
+  nodes <- doc |>
     read_html() |>
     html_nodes('meta, title')
 
@@ -359,7 +365,7 @@ read_meta <- function(url){
   }
   
   # check for a title
-  title <- nodes |> html_nodes(xpath = "/html/head/title2") |> html_text()
+  title <- nodes |> html_nodes(xpath = "/html/head/title") |> html_text()
   title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
   
   if (length(title) > 0) {
