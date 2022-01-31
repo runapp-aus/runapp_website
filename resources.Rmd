@@ -86,7 +86,7 @@ read_meta <- function(url, n = 400){
   }
   
   # check for a title
-  title <- nodes |> html_nodes(xpath = "/html/head/title2") |> html_text()
+  title <- nodes |> html_nodes(xpath = "/html/head/title") |> html_text()
   title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
   
   if (length(title) > 0) {
