@@ -58,13 +58,18 @@ padding: .5rem;
 ```{r functions, echo=FALSE}
 
 
-read_meta <- function(url){
+read_meta <- function(url, n = 400){
   
-  doc <- readLines(url, n = 300) |> # add way to check for end of header and iterate if not found
+  doc <- readLines(url, n = n) |> # add way to check for end of header and iterate if not found
     paste0(collapse = '') #|> # cleans parts of page where tag contents are across multiple rows
-    #iconv(to = 'UTF-8') 
   
-  nodes <- gsub('Ã¢â‚¬â„¢', "'", doc) |>
+  # clean doc of non-utf characters
+  doc <- gsub('Ã¢â‚¬â„¢', "'", doc)
+  doc <- gsub('â€™', "'", doc)
+  doc <- gsub('Â', "", doc)
+  doc <- gsub('Ã‚Â', " ", doc)
+  
+  nodes <- doc |>
     read_html() |>
     html_nodes('meta, title')
 
