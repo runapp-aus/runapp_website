@@ -11,12 +11,12 @@ navbar:
       href: join.html
     - text: "About"
       href: about.html
+    - text: "R Resources"
+      href: resources.html
     - text: "TORs"
       hred: tors.html
     - text: "Code of Conduct"
       href: code-of-conduct.html
-    - text: "R Resources"
-      href: resources.html
 output: distill::distill_article
 base_url: https://runapp-aus.github.io/runapp_website/
 repository_url: https://github.com/runapp-aus/runapp_website
