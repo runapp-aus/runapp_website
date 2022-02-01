@@ -5,6 +5,7 @@ description: |
 output: 
   distill::distill_article:
     toc: true
+    toc_float: true
 ---
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -28,6 +29,7 @@ library(purrr)
 library(htmltools)
 library(knitr)
 
+# TODO: the below code did not work but it is a clearer approach than the manual links above and the style below
 # withTags(
 #   head(
 #     link(rel="stylesheet",
@@ -68,23 +70,23 @@ read_meta <- function(url, n = 400){
   doc <- gsub('â€™', "'", doc)
   doc <- gsub('Â', "", doc)
   doc <- gsub('Ã‚Â', " ", doc)
+  doc <- gsub('â€“', "-", doc)
   
   nodes <- doc |>
     read_html() |>
     html_nodes('meta, title')
 
-  meta <- nodes |>
+  meta_prop <- nodes |>
     map_dfr(~ tibble(property = html_attr(.x, 'property'),
                      content = html_attr(.x, 'content'))) |>
     filter(!is.na(property))
     
-  if (nrow(meta) == 0) {
-    meta <- nodes |>
-      map_dfr(~ tibble(property = html_attr(.x, 'name'),
-                       content = html_attr(.x, 'content'))) |>
-      filter(!is.na(property))
-  }
-  
+  meta_name <- nodes |>
+    map_dfr(~ tibble(property = html_attr(.x, 'name'),
+                     content = html_attr(.x, 'content'))) |>
+    filter(!is.na(property))
+
+  meta <- bind_rows(meta_prop, meta_name)
   # check for a title
   title <- nodes |> html_nodes(xpath = "/html/head/title") |> html_text()
   title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
@@ -130,6 +132,12 @@ card_url <- function(url, title, description, image, metadata_available, metadat
   card_img <- details |> filter(property == 'og:image') |> pull(content)
   card_img_alt <- details |> filter(property == 'og:image:alt') |> pull(content) # TODO: use title if metadata missing
   
+  card_author <- details |> 
+    filter(property == 'author') |> 
+    pull(content) |>
+    paste(collapse = '')
+  
+
   
   # update input data list from web
   if (is.na(out[out$link == url, 'title'])) {
@@ -156,10 +164,14 @@ card_url <- function(url, title, description, image, metadata_available, metadat
               div(class = 'card-body',
                   h4(class = 'card-title',
                      a(href = card_url,
-                       iconv(card_title))
+                       card_title)
                      ),
                   p(class="card-text text-secondary",
-                    card_text)
+                    card_text),
+                  p(class="card-text text-secondary",
+                    if (card_author != '') {
+                      div("Author(s):", br(), card_author)
+                    })
                 )
               ),
           div(class = 'col-sm-5',
@@ -326,45 +338,39 @@ dt
 
 If you know of a resource that you think should be included on this list you are welcome to add it. Simply fork this repo make your changes and [submit a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
 
-All the resources in this are organised via a [CSV file](https://github.com/runapp-aus/runapp_website/blob/r-resources/data/resources.csv). When you look at this list you will not that some entries only have values in the first 3 fields:
+All the resources in this are organised via a [CSV file](https://github.com/runapp-aus/runapp_website/blob/r-resources/data/resources.csv). When you look at this list you will not that some entries only have values in the first 4 fields:
 
 1. type	
 2. metadata_available	
-3. link
+3. metadata_n
+4. link
 
-In these cases the `metadata_available` value is "yes". This means that all the needed metadata can be automatically downloaded via the resources web metadata.
+In these cases the `metadata_available` value is "yes". This means that all the needed metadata can be automatically downloaded via the resources web metadata. The `metadata_n` field indicates how much of the URL needs to be read in order to get all the needed metadata (more on this later). 
 
 You can test yourself if the metadata of the resource you wish to add is available using the following helper function.
 
 ```r
 read_meta <- function(url, n = 400){
   
-  doc <- readLines(url, n = n) |> # add way to check for end of header and iterate if not found
+  doc <- readLines(url, n = n) |> 
     paste0(collapse = '') #|> # cleans parts of page where tag contents are across multiple rows
-  
-  # clean doc of non-utf characters
-  doc <- gsub('Ã¢â‚¬â„¢', "'", doc)
-  doc <- gsub('â€™', "'", doc)
-  doc <- gsub('Â', "", doc)
-  doc <- gsub('Ã‚Â', " ", doc)
   
   nodes <- doc |>
     read_html() |>
     html_nodes('meta, title')
 
-  meta <- nodes |>
+  meta_prop <- nodes |>
     map_dfr(~ tibble(property = html_attr(.x, 'property'),
                      content = html_attr(.x, 'content'))) |>
     filter(!is.na(property))
     
-  if (nrow(meta) == 0) {
-    meta <- nodes |>
-      map_dfr(~ tibble(property = html_attr(.x, 'name'),
-                       content = html_attr(.x, 'content'))) |>
-      filter(!is.na(property))
-  }
-  
-  # check for a title
+  meta_name <- nodes |>
+    map_dfr(~ tibble(property = html_attr(.x, 'name'),
+                     content = html_attr(.x, 'content'))) |>
+    filter(!is.na(property))
+
+  meta <- bind_rows(meta_prop, meta_name)
+
   title <- nodes |> html_nodes(xpath = "/html/head/title") |> html_text()
   title_tag <- if ('og:title' %in% meta$property) 'title' else 'og:title'
   
@@ -382,11 +388,15 @@ read_meta <- function(url, n = 400){
 Just run the function in R to get a table of available metadata. What we are looking for here are fields for a title, description and image. Usually these fields are prefixed with `og:` which indicates they comply with the [Open Graph metadata](https://ogp.me/) standard. Indeed if we test the Open Graph website, we get the following:
 
 ```{r, echo=TRUE}
-read_meta('https://ogp.me/') |> knitr::kable()
+read_meta('https://ogp.me/', n = 100) |> knitr::kable()
 ```
 
 
-If you get a complete metadata record simply add the details to the first three fields, including `metadata_available` as "yes". Where a resources metadata does not include a title, description and image; please add these additional fields to the CSV and set `metadata_available` value as "no".
+If you get a complete metadata record simply add the details to the first three fields, including `metadata_available` as "yes" and `metadata_n` as "100". The `metadata_n` field is needed in order to limit the amount of each webpage that is read; remember we are only after the metadata and this is generally found in the first 100 rows. Increment `n` by 100 until you get something. You can see exactly where the metadata is by inspecting the resources code.
+
+![](images/metadata.PNG)
+
+Where a resources metadata does not include a title, description and image; please add these additional fields to the CSV and set `metadata_available` value as "no".
 
 And that's it. You have added a new R resource to the list.
 
