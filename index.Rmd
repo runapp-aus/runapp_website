@@ -1,5 +1,11 @@
 ---
 title: ""
+description: |
+  We’re a community of people who work in Australian public 
+  policy or the public sector and use – or aspire to use – R, 
+  the popular language for analysing data.
+base_url: https://runapp-aus.github.io/runapp_website
+preview: images/runapp_logo.png  
 site: distill::distill_website
 listing: posts
 ---

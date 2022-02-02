@@ -1,7 +1,9 @@
 name: "runapp_website"
 title: "runapp"
 description: |
-  runapp
+  We’re a community of people who work in Australian public 
+  policy or the public sector and use – or aspire to use – R, 
+  the popular language for analysing data.
 output_dir: "docs"
 navbar:
   right:
@@ -21,4 +23,5 @@ output: distill::distill_article
 base_url: https://runapp-aus.github.io/runapp_website/
 repository_url: https://github.com/runapp-aus/runapp_website
 source_url: true
+preview: https://runapp-aus.github.io/runapp_website/images/runapp_logo.png
 theme: runapp_theme.css

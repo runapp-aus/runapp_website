@@ -2,6 +2,8 @@
 title: "R Learning Resources"
 description: |
   Curated list of R learning resources
+base_url: https://runapp-aus.github.io/runapp_website
+preview: images/runapp_logo.png
 output: 
   distill::distill_article:
     toc: true
