@@ -11,6 +11,8 @@ navbar:
       href: join.html
     - text: "About"
       href: about.html
+    - text: "R Resources"
+      href: resources.html
     - text: "TORs"
       hred: tors.html
     - text: "Code of Conduct"
