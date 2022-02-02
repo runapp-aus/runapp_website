@@ -4,7 +4,9 @@
     <title>runapp</title>
     <link>https://runapp-aus.github.io/runapp_website/</link>
     <atom:link href="https://runapp-aus.github.io/runapp_website/index.xml" rel="self" type="application/rss+xml"/>
-    <description>runapp
+    <description>We’re a community of people who work in Australian public 
+policy or the public sector and use – or aspire to use – R, 
+the popular language for analysing data.
 </description>
     <generator>Distill</generator>
     <lastBuildDate>Thu, 25 Mar 2021 00:00:00 +0000</lastBuildDate>
