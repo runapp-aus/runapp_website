@@ -30,6 +30,7 @@ library(dplyr)
 library(purrr)
 library(htmltools)
 library(knitr)
+library(glue)
 
 # TODO: the below code did not work but it is a clearer approach than the manual links above and the style below
 # withTags(
@@ -317,14 +318,32 @@ rlr
 
 ## Search
 
+<style>
+.badge {
+    background-color: #a8c5da;
+} 
+</style>
 
+```{r search, echo=FALSE, layout="l-page"}
 
-```{r search, echo=FALSE}
+to_tags <- Vectorize(
+  function(x){
+    tags <- unlist(strsplit(x, split = ';'))
+    buttons <- sapply(tags, function(t){
+      if (is.na(t)) {
+        ''
+      } else {
+        glue('<span class="badge {gsub(" ", "-", t)}">{t}</span>')
+      }})
+    paste(buttons, collapse = '')
+  }
+) 
 
 dt <- out |>
-  select(type, link, description) |>
+  select(type, link, description, tags) |>
   mutate(description = iconv(description),
-         link = glue::glue('<a href={link}>{link}</a>')) |>
+         link = glue::glue('<a href={link}>{link}</a>'),
+         tags = to_tags(tags)) |>
   DT::datatable(rownames = FALSE, 
                 escape = FALSE,
                 filter = list(position = 'top'), 
