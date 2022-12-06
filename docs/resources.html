@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,9 +74,9 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
 code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
@@ -793,6 +794,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article table.gt_table td,
   d-article table.gt_table th {
     border-bottom: none;
+    font-size: 100%;
   }
 
   .html-widget {
@@ -1034,10 +1036,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1869,9 +1867,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
         var refs = $(this).attr('data-cites').split(" ");
         var refHtml = refs.map(function(ref) {
-          return "<p>" + $('#ref-' + ref).html() + "</p>";
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
         }).join("\n");
         window.tippy(this, {
           allowHTML: true,
@@ -1883,6 +1893,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1982,6 +2017,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -2004,7 +2041,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2353,21 +2390,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
   <script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
   <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-  <script src="site_libs/datatables-binding-0.20/datatables.js"></script>
+  <script src="site_libs/datatables-binding-0.26/datatables.js"></script>
   <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-  <link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
-  <script src="site_libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+  <link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <link href="site_libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+  <script src="site_libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
   <link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
   <script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
   <link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
   <script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
-  <link href="site_libs/dt-plugin-searchhighlight-1.11.3/source.css" rel="stylesheet" />
-  <script src="site_libs/dt-plugin-searchhighlight-1.11.3/jquery.highlight.js"></script>
-  <script src="site_libs/dt-plugin-searchhighlight-1.11.3/source.min.js"></script>
+  <link href="site_libs/dt-plugin-searchhighlight-1.12.1/source.css" rel="stylesheet" />
+  <script src="site_libs/dt-plugin-searchhighlight-1.12.1/jquery.highlight.js"></script>
+  <script src="site_libs/dt-plugin-searchhighlight-1.12.1/source.min.js"></script>
   <link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
   <script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2428,16 +2465,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#books">Books</a></li>
-<li><a href="#guides">Guides</a></li>
-<li><a href="#tutorials">Tutorials</a></li>
-<li><a href="#blogs">Blogs</a></li>
-<li><a href="#videos">Videos</a></li>
-<li><a href="#learning-tools">Learning Tools</a></li>
-<li><a href="#course-materials">Course Materials</a></li>
-<li><a href="#other-resource-lists">Other Resource Lists</a></li>
-<li><a href="#search">Search</a></li>
-<li><a href="#add-to-this-page">Add to this Page</a></li>
+<li><a href="#books" id="toc-books">Books</a></li>
+<li><a href="#guides" id="toc-guides">Guides</a></li>
+<li><a href="#tutorials" id="toc-tutorials">Tutorials</a></li>
+<li><a href="#blogs" id="toc-blogs">Blogs</a></li>
+<li><a href="#videos" id="toc-videos">Videos</a></li>
+<li><a href="#learning-tools" id="toc-learning-tools">Learning Tools</a></li>
+<li><a href="#course-materials" id="toc-course-materials">Course Materials</a></li>
+<li><a href="#other-resource-lists" id="toc-other-resource-lists">Other Resource Lists</a></li>
+<li><a href="#search" id="toc-search">Search</a></li>
+<li><a href="#add-to-this-page" id="toc-add-to-this-page">Add to this Page</a></li>
 </ul>
 </nav>
 </div>
@@ -2488,7 +2525,7 @@ Andrew Gelman, Jennifer Hill, Aki Vehtari
 <div class="col-sm-7">
 <div class="card-body">
 <h4 class="card-title">
-<a href="https://bookdown.org/yihui/rmarkdown/">R Markdown: The Definitive Guide</a>
+<a>R Markdown: The Definitive Guide</a>
 </h4>
 <p class="card-text text-secondary">The first official book authored by the core R Markdown developers that provides a comprehensive and accurate reference to the R Markdown ecosystem. With R Markdown, you can easily create reproducible data analysis reports, presentations, dashboards, interactive applications, books, dissertations, websites, and journal articles, while enjoying the simplicity of Markdown and the great power of R and other languages.</p>
 <p class="card-text text-secondary">
@@ -2534,7 +2571,7 @@ Claus O. Wilke
 <h4 class="card-title">
 <a href="https://csgillespie.github.io/efficientR/">Efficient R programming</a>
 </h4>
-<p class="card-text text-secondary">Efficient R Programming is about increasing the amount of work you can do with R in a given amount of time. It's about both computational and programmer efficiency.</p>
+<p class="card-text text-secondary">Efficient R Programming is about increasing the amount of work you can do with R in a given amount of time. It’s about both computational and programmer efficiency.</p>
 <p class="card-text text-secondary">
 <div>
 Author(s):
@@ -2557,13 +2594,7 @@ Colin GillespieRobin Lovelace
 <a href="https://datasciencebox.org/">Data Science in a Box</a>
 </h4>
 <p class="card-text text-secondary">How can we effectively and efficiently teach data science to students with little to no background in computing and statistical thinking? How can we equip them with the skills and tools for reasoning with various types of data and leave them wanting to learn more? This introductory data science course is our (working) answer to this question.</p>
-<p class="card-text text-secondary">
-<div>
-Author(s):
-<br/>
-Mine Ã‡etinkaya-Rundel
-</div>
-</p>
+<p class="card-text text-secondary"></p>
 </div>
 </div>
 <div class="col-sm-5">
@@ -2622,7 +2653,7 @@ Hadley Wickham, Danielle Navarro, and Thomas Lin Pedersen
 <div class="col-sm-7">
 <div class="card-body">
 <h4 class="card-title">
-<a href="https://happygitwithr.com/">Let's Git started | Happy Git and GitHub for the useR</a>
+<a href="https://happygitwithr.com/">Let’s Git started | Happy Git and GitHub for the useR</a>
 </h4>
 <p class="card-text text-secondary">Using Git and GitHub with R, Rstudio, and R Markdown</p>
 <p class="card-text text-secondary">
@@ -2720,7 +2751,7 @@ Nicholas Tierney
 <h4 class="card-title">
 <a href="https://rstudio-education.github.io/hopr/">Hands-On Programming with R</a>
 </h4>
-<p class="card-text text-secondary">This book will teach you how to program in R, with hands-on examples. I wrote it for non-programmers to provide a friendly introduction to the R language. You'll learn how to load data, assemble and disassemble data objects, navigate R's environment system, write your own functions, and use all of R's programming tools. Throughout the book, you'll use your newfound skills to solve practical data science problems.</p>
+<p class="card-text text-secondary">This book will teach you how to program in R, with hands-on examples. I wrote it for non-programmers to provide a friendly introduction to the R language. You’ll learn how to load data, assemble and disassemble data objects, navigate R’s environment system, write your own functions, and use all of R’s programming tools. Throughout the book, you’ll use your newfound skills to solve practical data science problems.</p>
 <p class="card-text text-secondary">
 <div>
 Author(s):
@@ -3006,7 +3037,7 @@ R Weekly
 <div class="col-sm-7">
 <div class="card-body">
 <h4 class="card-title">
-<a href="https://www.youtube.com/watch?v=eWxxfttcMts">Git for Humans - Alice Bartlett at UX Brighton 2016</a>
+<a href="https://www.youtube.com/watch?v=eWxxfttcMts">Git for Humans – Alice Bartlett at UX Brighton 2016</a>
 </h4>
 <p class="card-text text-secondary"></p>
 <p class="card-text text-secondary"></p>
@@ -3207,7 +3238,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/91db3833bf0ddfa3fd528b5d16a789e15c266558797266a136f29169bddebd07/numbats/cwd" alt="Materials for ETC5523: Communicating with Data at Monash University - GitHub - numbats/cwd: Materials for ETC5523: Communicating with Data at Monash University"/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/b50cf0d61d78a489ccf29487e08e6c0b93948035642099dde2fb58a2c420dbc7/numbats/cwd" alt="Materials for ETC5523: Communicating with Data at Monash University - GitHub - numbats/cwd: Materials for ETC5523: Communicating with Data at Monash University"/>
 </div>
 </div>
 </div>
@@ -3223,7 +3254,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/f7bd749386ef5a83200fb5638d4607b56e6ed8664ce6da735e097a6b4c1f9b94/numbats/eda" alt="Materials for ETC5521: Exploratory Data Analysis at Monash University - GitHub - numbats/eda: Materials for ETC5521: Exploratory Data Analysis at Monash University"/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/c7507f4bee7c940be0b0c1c7ba424dcc4706d8ea448d881e0e42449244720f93/numbats/eda" alt="Materials for ETC5521: Exploratory Data Analysis at Monash University - GitHub - numbats/eda: Materials for ETC5521: Exploratory Data Analysis at Monash University"/>
 </div>
 </div>
 </div>
@@ -3239,7 +3270,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/1fe2c8e6829a12a1b4261d06e2085cd267b672faf860c7824224c7bb36ba147f/numbats/ida" alt="Notes and Materials for Introduction to Data Analysis - GitHub - numbats/ida: Notes and Materials for Introduction to Data Analysis"/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/4fa9c537c1604bbc20e66fa632a6911aed04595cf2c0635b57dc5b94bf792277/numbats/ida" alt="Notes and Materials for Introduction to Data Analysis - GitHub - numbats/ida: Notes and Materials for Introduction to Data Analysis"/>
 </div>
 </div>
 </div>
@@ -3255,7 +3286,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/84b52f5f8f0e5ba7e7ae4e0f8383fe7674094f42bf4d34f71072902e1f2aa639/numbats/iml" alt="This is a repo containing materials for ETC3250/5250 at Monash University - GitHub - numbats/iml: This is a repo containing materials for ETC3250/5250 at Monash University"/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/d8befd4284c0ed10a8304a9e727d58eb710ea83dd2c1dd1367162ad72cca2173/numbats/iml" alt="This is a repo containing materials for ETC3250/5250 at Monash University - GitHub - numbats/iml: This is a repo containing materials for ETC3250/5250 at Monash University"/>
 </div>
 </div>
 </div>
@@ -3287,7 +3318,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/ac8ba049b761f3eca2cf08cba88b9bc1de23e4fdf310894841ca40b3e7c155c7/uo-ec607/lectures" alt="Lecture notes for EC 607. Contribute to uo-ec607/lectures development by creating an account on GitHub."/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/591b4b863a1d5d620e69f9514c58f920435fb4cd7d433c18a1e64d3016a241c9/uo-ec607/lectures" alt="Lecture notes for EC 607. Contribute to uo-ec607/lectures development by creating an account on GitHub."/>
 </div>
 </div>
 </div>
@@ -3320,7 +3351,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/98443d18fa9c234815d5196dab0b82badf38f0ee030124a222f0803881504303/coatless-tutorials/teach-r" alt="List of Resources for Teaching R. Contribute to coatless-tutorials/teach-r development by creating an account on GitHub."/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/000041e1e242d03b99eaebb17e89cbb586e5a11d86b959157a7536ff73cb4903/coatless-tutorials/teach-r" alt="List of Resources for Teaching R. Contribute to coatless-tutorials/teach-r development by creating an account on GitHub."/>
 </div>
 </div>
 </div>
@@ -3368,7 +3399,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/78e98f8871c422368852457a7ec6a99ed1b09fe5b81406b6f7a250f764636cbd/rstudio-education/rstats-ed" alt="List of courses teaching R. Contribute to rstudio-education/rstats-ed development by creating an account on GitHub."/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/55a2642adc2d6ec2d40b2874a95951db8229538a3ba3c977244b061be0dcfd0e/rstudio-education/rstats-ed" alt="List of courses teaching R. Contribute to rstudio-education/rstats-ed development by creating an account on GitHub."/>
 </div>
 </div>
 </div>
@@ -3384,7 +3415,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 </div>
 </div>
 <div class="col-sm-5">
-<img class="card-img-top h-100" src="https://opengraph.githubassets.com/1099f59f4c17a309244295e2c629a5f171a56848e465abe1dc9c191d0cb8ce91/vanatteveldt/learningr" alt="Helpful resources for learning R. Contribute to vanatteveldt/learningr development by creating an account on GitHub."/>
+<img class="card-img-top h-100" src="https://opengraph.githubassets.com/f21c600a4abc9efbb5ccd3777e2ed6621f9608f93bb2355ffd6434d82de3e330/vanatteveldt/learningr" alt="Helpful resources for learning R. Contribute to vanatteveldt/learningr development by creating an account on GitHub."/>
 </div>
 </div>
 </div>
@@ -3428,8 +3459,8 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 } 
 </style>
 <div class="layout-chunk" data-layout="l-page">
-<div id="htmlwidget-722cdad0230bd4a475d0" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-722cdad0230bd4a475d0">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Books","Guides","Books","Books","Books","Books","Books","Books","Books","Guides","Guides","Guides","Guides","Guides","Guides","Guides","Guides","Tutorials","Blogs","Blogs","Blogs","Blogs","Videos","Videos","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Learning Tools","Learning Tools","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Course Materials","Books","Learning Tools","Books","Books","Books","Learning Tools","Books","Books","Books","Books"],["<a href=https://r4ds.had.co.nz/>https://r4ds.had.co.nz/<\/a>","<a href=https://www.rstudio.com/resources/cheatsheets/>https://www.rstudio.com/resources/cheatsheets/<\/a>","<a href=https://learningstatisticswithr.com/>https://learningstatisticswithr.com/<\/a>","<a href=https://ggplot2-book.org/>https://ggplot2-book.org/<\/a>","<a href=https://otexts.com/fpp2/>https://otexts.com/fpp2/<\/a>","<a href=https://www.bigbookofr.com/>https://www.bigbookofr.com/<\/a>","<a href=https://datasciencebox.org/>https://datasciencebox.org/<\/a>","<a href=https://rstudio-education.github.io/hopr/>https://rstudio-education.github.io/hopr/<\/a>","<a href=https://happygitwithr.com/index.html>https://happygitwithr.com/index.html<\/a>","<a href=https://grattan.github.io/R_at_Grattan/index.html>https://grattan.github.io/R_at_Grattan/index.html<\/a>","<a href=https://rladiessydney.org/courses/ryouwithme/>https://rladiessydney.org/courses/ryouwithme/<\/a>","<a href=http://rtoolbox.rbind.io/general/>http://rtoolbox.rbind.io/general/<\/a>","<a href=https://education.rstudio.com/learn/beginner/>https://education.rstudio.com/learn/beginner/<\/a>","<a href=https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html>https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html<\/a>","<a href=https://www.adventures-in-r.com/>https://www.adventures-in-r.com/<\/a>","<a href=https://robust-tools.djnavarro.net/data-visualisation/>https://robust-tools.djnavarro.net/data-visualisation/<\/a>","<a href=https://stat545.com/>https://stat545.com/<\/a>","<a href=https://juliasilge.com/blog/learn-tidytext-learnr/>https://juliasilge.com/blog/learn-tidytext-learnr/<\/a>","<a href=https://juliasilge.com/blog/>https://juliasilge.com/blog/<\/a>","<a href=https://www.r-bloggers.com/>https://www.r-bloggers.com/<\/a>","<a href=https://rweekly.org/>https://rweekly.org/<\/a>","<a href=https://ropensci.org/blog/>https://ropensci.org/blog/<\/a>","<a href=https://youtu.be/y9KJmUGc8SE>https://youtu.be/y9KJmUGc8SE<\/a>","<a href=https://youtu.be/eWxxfttcMts>https://youtu.be/eWxxfttcMts<\/a>","<a href=http://stats220.earo.me/>http://stats220.earo.me/<\/a>","<a href=https://wcd.numbat.space/>https://wcd.numbat.space/<\/a>","<a href=https://github.com/numbats/ida>https://github.com/numbats/ida<\/a>","<a href=https://github.com/numbats/wcd>https://github.com/numbats/wcd<\/a>","<a href=https://github.com/numbats/cwd>https://github.com/numbats/cwd<\/a>","<a href=https://github.com/numbats/eda>https://github.com/numbats/eda<\/a>","<a href=https://github.com/numbats/iml>https://github.com/numbats/iml<\/a>","<a href=https://github.com/uo-ec607/lectures>https://github.com/uo-ec607/lectures<\/a>","<a href=http://www2.stat.duke.edu/courses/Fall17/sta112.01/syllabus/>http://www2.stat.duke.edu/courses/Fall17/sta112.01/syllabus/<\/a>","<a href=https://evalsp22.classes.andrewheiss.com/>https://evalsp22.classes.andrewheiss.com/<\/a>","<a href=https://datavizs21.classes.andrewheiss.com/>https://datavizs21.classes.andrewheiss.com/<\/a>","<a href=https://swirlstats.com/>https://swirlstats.com/<\/a>","<a href=https://rstudio.github.io/learnr/>https://rstudio.github.io/learnr/<\/a>","<a href=https://osf.io/be7yt/wiki/Learning%20R/>https://osf.io/be7yt/wiki/Learning%20R/<\/a>","<a href=https://www.njtierney.com/resources/>https://www.njtierney.com/resources/<\/a>","<a href=https://github.com/coatless-tutorials/teach-r>https://github.com/coatless-tutorials/teach-r<\/a>","<a href=https://github.com/rstudio-education/rstats-ed>https://github.com/rstudio-education/rstats-ed<\/a>","<a href=https://github.com/vanatteveldt/learningr>https://github.com/vanatteveldt/learningr<\/a>","<a href=https://github.com/iamericfletcher/awesome-r-learning-resources>https://github.com/iamericfletcher/awesome-r-learning-resources<\/a>","<a href=https://github.com/rstudio-education>https://github.com/rstudio-education<\/a>","<a href=http://stat447.com/>http://stat447.com/<\/a>","<a href=https://geocompr.robinlovelace.net/index.html>https://geocompr.robinlovelace.net/index.html<\/a>","<a href=https://stata2r.github.io/>https://stata2r.github.io/<\/a>","<a href=https://avehtari.github.io/ROS-Examples/>https://avehtari.github.io/ROS-Examples/<\/a>","<a href=https://bookdown.org/yihui/rmarkdown/>https://bookdown.org/yihui/rmarkdown/<\/a>","<a href=https://csgillespie.github.io/efficientR/>https://csgillespie.github.io/efficientR/<\/a>","<a href=https://lost-stats.github.io/>https://lost-stats.github.io/<\/a>","<a href=https://clauswilke.com/dataviz>https://clauswilke.com/dataviz<\/a>","<a href=https://www.statlearning.com/>https://www.statlearning.com/<\/a>","<a href=https://rmd4sci.njtierney.com/>https://rmd4sci.njtierney.com/<\/a>","<a href=https://www.bigbookofr.com/>https://www.bigbookofr.com/<\/a>"],["R for Data Science","RStudio cheatsheets","Learning Statistics with R","ggplot2: Elegant Graphics for Data Analysis","Forecasting: PrinciplesÂ andÂ Practice (2nd ed)",null,"Data Science in a Box","Hands-On Programming with R","Let's Git started | Happy Git and GitHub for the useR","Welcome! | Using R at Grattan Institute","What is RYouWithMe? | R-Ladies Sydney","R Toolbox",null,"TEACUPS, GIRAFFES, & STATISTICS","Adventures in R","DATA SCIENCE WITH R","STAT 545","Learn tidytext with my new learnr course | Julia Silge","Blog | Julia Silge","R-bloggers","Home","Blog","Data Wrangling R | RStudio Webinar - 2016","Git for Humans - Alice Bartlett at UX Brighton 2016","STATS 220 Data Technology - ","ETC5512: Wild Caught Data","GitHub - numbats/ida: Notes and Materials for Introduction to Data Analysis","GitHub - numbats/wcd: Materials for Wild-Caught Data","GitHub - numbats/cwd: Materials for ETC5523: Communicating with Data at Monash University","GitHub - numbats/eda: Materials for ETC5521: Exploratory Data Analysis at Monash University","GitHub - numbats/iml: This is a repo containing materials for ETC3250/5250 at Monash University","GitHub - uo-ec607/lectures: Lecture notes for EC 607","STA 112FS","Program Evaluation","Data Visualization","Learn R, in R","Interactive Tutorials for R","ANZORN OSF R resources page","Nick Tierney's curated list of R resources","GitHub - coatless-tutorials/teach-r: List of Resources for Teaching R","GitHub - rstudio-education/rstats-ed: List of courses teaching R","GitHub - vanatteveldt/learningr: Helpful resources for learning R","GitHub - iamericfletcher/awesome-r-learning-resources: A curated collection of free resources to help deepen your understanding of the R programming language. Updated regularly. Contributions encouraged via pull request (see contributing.md).","RStudio Education","STAT 447 : Data Science Programming Methods","Welcome | Geocomputation with R","Translating Stata to R","Regression and Other Stories","R Markdown: The Definitive Guide","Efficient R programming","Library of Statistical Techniques (LOST)","Fundamentals of Data Visualization","An Introduction to Statistical Learning","RMarkdown for Scientists",null],["<span class=\"badge intermediate\">intermediate<\/span>","<span class=\"badge beginners\">beginners<\/span>","<span class=\"badge beginners\">beginners<\/span>","<span class=\"badge data-visualisation\">data visualisation<\/span>","<span class=\"badge forecasting\">forecasting<\/span>","<span class=\"badge beginners\">beginners<\/span><span class=\"badge intermediate\">intermediate<\/span>","","","","","","","","","","<span class=\"badge data-visualisation\">data visualisation<\/span><span class=\"badge -beginners\"> beginners<\/span>","","<span class=\"badge text-analysis\">text analysis<\/span>","","","","","","","","","","","","<span class=\"badge exproratory-data-analysis\">exproratory data analysis<\/span>","<span class=\"badge machine-learning\">machine learning<\/span>","","","","<span class=\"badge data-visualisation\">data visualisation<\/span>","","","","","","","","","","","<span class=\"badge spatial\">spatial<\/span>","<span class=\"badge translation\">translation<\/span>","<span class=\"badge statistics\">statistics<\/span>","<span class=\"badge rmarkdown\">rmarkdown<\/span>","","<span class=\"badge translation\">translation<\/span>","<span class=\"badge data-visualisation\">data visualisation<\/span>","<span class=\"badge statistics\">statistics<\/span>","<span class=\"badge scientists\">scientists<\/span><span class=\"badge -rmarkdown\"> rmarkdown<\/span>","<span class=\"badge communication\">communication<\/span><span class=\"badge datavisualisation\">datavisualisation<\/span>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>type<\/th>\n      <th>link<\/th>\n      <th>description<\/th>\n      <th>tags<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"searchHighlight":true,"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8cfaad6c7e84c4348129" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8cfaad6c7e84c4348129">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Books","Guides","Books","Books","Books","Books","Books","Books","Books","Guides","Guides","Guides","Guides","Guides","Guides","Guides","Guides","Tutorials","Blogs","Blogs","Blogs","Blogs","Videos","Videos","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Course Materials","Learning Tools","Learning Tools","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Resource Lists","Course Materials","Books","Learning Tools","Books","Books","Books","Learning Tools","Books","Books","Books","Books"],["<a href=https://r4ds.had.co.nz/>https://r4ds.had.co.nz/<\/a>","<a href=https://www.rstudio.com/resources/cheatsheets/>https://www.rstudio.com/resources/cheatsheets/<\/a>","<a href=https://learningstatisticswithr.com/>https://learningstatisticswithr.com/<\/a>","<a href=https://ggplot2-book.org/>https://ggplot2-book.org/<\/a>","<a href=https://otexts.com/fpp2/>https://otexts.com/fpp2/<\/a>","<a href=https://www.bigbookofr.com/>https://www.bigbookofr.com/<\/a>","<a href=https://datasciencebox.org/>https://datasciencebox.org/<\/a>","<a href=https://rstudio-education.github.io/hopr/>https://rstudio-education.github.io/hopr/<\/a>","<a href=https://happygitwithr.com/index.html>https://happygitwithr.com/index.html<\/a>","<a href=https://grattan.github.io/R_at_Grattan/index.html>https://grattan.github.io/R_at_Grattan/index.html<\/a>","<a href=https://rladiessydney.org/courses/ryouwithme/>https://rladiessydney.org/courses/ryouwithme/<\/a>","<a href=http://rtoolbox.rbind.io/general/>http://rtoolbox.rbind.io/general/<\/a>","<a href=https://education.rstudio.com/learn/beginner/>https://education.rstudio.com/learn/beginner/<\/a>","<a href=https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html>https://tinystats.github.io/teacups-giraffes-and-statistics/01_introToR.html<\/a>","<a href=https://www.adventures-in-r.com/>https://www.adventures-in-r.com/<\/a>","<a href=https://robust-tools.djnavarro.net/data-visualisation/>https://robust-tools.djnavarro.net/data-visualisation/<\/a>","<a href=https://stat545.com/>https://stat545.com/<\/a>","<a href=https://juliasilge.com/blog/learn-tidytext-learnr/>https://juliasilge.com/blog/learn-tidytext-learnr/<\/a>","<a href=https://juliasilge.com/blog/>https://juliasilge.com/blog/<\/a>","<a href=https://www.r-bloggers.com/>https://www.r-bloggers.com/<\/a>","<a href=https://rweekly.org/>https://rweekly.org/<\/a>","<a href=https://ropensci.org/blog/>https://ropensci.org/blog/<\/a>","<a href=https://youtu.be/y9KJmUGc8SE>https://youtu.be/y9KJmUGc8SE<\/a>","<a href=https://youtu.be/eWxxfttcMts>https://youtu.be/eWxxfttcMts<\/a>","<a href=http://stats220.earo.me/>http://stats220.earo.me/<\/a>","<a href=https://wcd.numbat.space/>https://wcd.numbat.space/<\/a>","<a href=https://github.com/numbats/ida>https://github.com/numbats/ida<\/a>","<a href=https://github.com/numbats/wcd>https://github.com/numbats/wcd<\/a>","<a href=https://github.com/numbats/cwd>https://github.com/numbats/cwd<\/a>","<a href=https://github.com/numbats/eda>https://github.com/numbats/eda<\/a>","<a href=https://github.com/numbats/iml>https://github.com/numbats/iml<\/a>","<a href=https://github.com/uo-ec607/lectures>https://github.com/uo-ec607/lectures<\/a>","<a href=http://www2.stat.duke.edu/courses/Fall17/sta112.01/syllabus/>http://www2.stat.duke.edu/courses/Fall17/sta112.01/syllabus/<\/a>","<a href=https://evalsp22.classes.andrewheiss.com/>https://evalsp22.classes.andrewheiss.com/<\/a>","<a href=https://datavizs21.classes.andrewheiss.com/>https://datavizs21.classes.andrewheiss.com/<\/a>","<a href=https://swirlstats.com/>https://swirlstats.com/<\/a>","<a href=https://rstudio.github.io/learnr/>https://rstudio.github.io/learnr/<\/a>","<a href=https://osf.io/be7yt/wiki/Learning%20R/>https://osf.io/be7yt/wiki/Learning%20R/<\/a>","<a href=https://www.njtierney.com/resources/>https://www.njtierney.com/resources/<\/a>","<a href=https://github.com/coatless-tutorials/teach-r>https://github.com/coatless-tutorials/teach-r<\/a>","<a href=https://github.com/rstudio-education/rstats-ed>https://github.com/rstudio-education/rstats-ed<\/a>","<a href=https://github.com/vanatteveldt/learningr>https://github.com/vanatteveldt/learningr<\/a>","<a href=https://github.com/iamericfletcher/awesome-r-learning-resources>https://github.com/iamericfletcher/awesome-r-learning-resources<\/a>","<a href=https://github.com/rstudio-education>https://github.com/rstudio-education<\/a>","<a href=http://stat447.com/>http://stat447.com/<\/a>","<a href=https://geocompr.robinlovelace.net/index.html>https://geocompr.robinlovelace.net/index.html<\/a>","<a href=https://stata2r.github.io/>https://stata2r.github.io/<\/a>","<a href=https://avehtari.github.io/ROS-Examples/>https://avehtari.github.io/ROS-Examples/<\/a>","<a href=https://bookdown.org/yihui/rmarkdown/>https://bookdown.org/yihui/rmarkdown/<\/a>","<a href=https://csgillespie.github.io/efficientR/>https://csgillespie.github.io/efficientR/<\/a>","<a href=https://lost-stats.github.io/>https://lost-stats.github.io/<\/a>","<a href=https://clauswilke.com/dataviz>https://clauswilke.com/dataviz<\/a>","<a href=https://www.statlearning.com/>https://www.statlearning.com/<\/a>","<a href=https://rmd4sci.njtierney.com/>https://rmd4sci.njtierney.com/<\/a>","<a href=https://www.bigbookofr.com/>https://www.bigbookofr.com/<\/a>"],["R for Data Science","RStudio cheatsheets","Learning Statistics with R","ggplot2: Elegant Graphics for Data Analysis","Forecasting: Principles and Practice (2nd ed)",null,"Data Science in a Box","Hands-On Programming with R","Let’s Git started | Happy Git and GitHub for the useR","Welcome! | Using R at Grattan Institute","What is RYouWithMe? | R-Ladies Sydney","R Toolbox",null,"TEACUPS, GIRAFFES, & STATISTICS","Adventures in R","DATA SCIENCE WITH R","STAT 545","Learn tidytext with my new learnr course | Julia Silge","Blog | Julia Silge","R-bloggers","Home","Blog","Data Wrangling R | RStudio Webinar - 2016","Git for Humans – Alice Bartlett at UX Brighton 2016","STATS 220 Data Technology - ","ETC5512: Wild Caught Data","GitHub - numbats/ida: Notes and Materials for Introduction to Data Analysis","GitHub - numbats/wcd: Materials for Wild-Caught Data","GitHub - numbats/cwd: Materials for ETC5523: Communicating with Data at Monash University","GitHub - numbats/eda: Materials for ETC5521: Exploratory Data Analysis at Monash University","GitHub - numbats/iml: This is a repo containing materials for ETC3250/5250 at Monash University","GitHub - uo-ec607/lectures: Lecture notes for EC 607","STA 112FS","Program Evaluation","Data Visualization","Learn R, in R","Interactive Tutorials for R","ANZORN OSF R resources page","Nick Tierney's curated list of R resources","GitHub - coatless-tutorials/teach-r: List of Resources for Teaching R","GitHub - rstudio-education/rstats-ed: List of courses teaching R","GitHub - vanatteveldt/learningr: Helpful resources for learning R","GitHub - iamericfletcher/awesome-r-learning-resources: A curated collection of free resources to help deepen your understanding of the R programming language. Updated regularly. Contributions encouraged via pull request (see contributing.md).","RStudio Education","STAT 447 : Data Science Programming Methods","Welcome | Geocomputation with R","Translating Stata to R","Regression and Other Stories","R Markdown: The Definitive Guide","Efficient R programming","Library of Statistical Techniques (LOST)","Fundamentals of Data Visualization","An Introduction to Statistical Learning","RMarkdown for Scientists",null],["<span class=\"badge intermediate\">intermediate<\/span>","<span class=\"badge beginners\">beginners<\/span>","<span class=\"badge beginners\">beginners<\/span>","<span class=\"badge data-visualisation\">data visualisation<\/span>","<span class=\"badge forecasting\">forecasting<\/span>","<span class=\"badge beginners\">beginners<\/span><span class=\"badge intermediate\">intermediate<\/span>","","","","","","","","","","<span class=\"badge data-visualisation\">data visualisation<\/span><span class=\"badge -beginners\"> beginners<\/span>","","<span class=\"badge text-analysis\">text analysis<\/span>","","","","","","","","","","","","<span class=\"badge exproratory-data-analysis\">exproratory data analysis<\/span>","<span class=\"badge machine-learning\">machine learning<\/span>","","","","<span class=\"badge data-visualisation\">data visualisation<\/span>","","","","","","","","","","","<span class=\"badge spatial\">spatial<\/span>","<span class=\"badge translation\">translation<\/span>","<span class=\"badge statistics\">statistics<\/span>","<span class=\"badge rmarkdown\">rmarkdown<\/span>","","<span class=\"badge translation\">translation<\/span>","<span class=\"badge data-visualisation\">data visualisation<\/span>","<span class=\"badge statistics\">statistics<\/span>","<span class=\"badge scientists\">scientists<\/span><span class=\"badge -rmarkdown\"> rmarkdown<\/span>","<span class=\"badge communication\">communication<\/span><span class=\"badge datavisualisation\">datavisualisation<\/span>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>type<\/th>\n      <th>link<\/th>\n      <th>description<\/th>\n      <th>tags<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"searchHighlight":true,"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <h2 id="add-to-this-page">Add to this Page</h2>
 <p>If you know of a resource that you think should be included on this list you are welcome to add it. Simply fork this repo make your changes and <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">submit a pull request</a>.</p>
@@ -3479,8 +3510,7 @@ Course lectures slides as well as guest lectures are publically accessible, see 
 <p>Just run the function in R to get a table of available metadata. What we are looking for here are fields for a title, description and image. Usually these fields are prefixed with <code>og:</code> which indicates they comply with the <a href="https://ogp.me/">Open Graph metadata</a> standard. Indeed if we test the Open Graph website, we get the following:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>read_meta</span><span class='op'>(</span><span class='st'>'https://ogp.me/'</span>, n <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span> |&gt; <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>read_meta</span><span class='op'>(</span><span class='st'>'https://ogp.me/'</span>, n <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span> <span class='op'>|&gt;</span> <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
 <table>
 <colgroup>
